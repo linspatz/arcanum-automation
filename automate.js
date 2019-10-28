@@ -5,7 +5,7 @@
 // @description  Automates casting buffs, buying gems making types gems, making lore. Adds sell junk/dupe item buttons. Must open the main tab and the spells tab once to work.
 // @match        http://www.lerpinglemur.com/arcanum/
 // @match        https://game312933.konggames.com/gamez/0031/2933/*
-// ==/UserScript==
+// ==/UserScript== // test
 
 var tc_debug = false;	// set to true to see debug messages
 
