@@ -20,7 +20,7 @@ var tc_auto_focus = true;
 var tc_auto_heal = true;
 
 // Set to a adventure name to continously ruin that adventure, leave blank to disable
-var tc_auto_adventure = "hestia's cottage";
+var tc_auto_adventure = "none";
 
 /* The following can be increased by encounters in the adventure listed. 
 (Stat) - ("dungeon name") (increased amount) (chance to get the encounter needed)
