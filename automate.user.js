@@ -135,7 +135,7 @@ function tc_populate_spells()
 // Call this every second to update resource values
 function tc_populate_resources()
 {
-	for (let n of document.querySelectorAll("div.game-main div.resource-list tr.item-name:not(.locked)")) {
+	for (let n of document.querySelectorAll("div.game-main div.res-list div")) {
 		var name = n.firstElementChild.innerHTML.toLowerCase();
 		var vals = n.lastElementChild.innerHTML.split("/");
 		var val0 = parseInt(vals[0]);
@@ -583,7 +583,7 @@ function tc_autofocus()
 		tc_skill_saved = "";
 
 		// 10 mana required for compile tome
-		var min = max < 12 ? max-2 : 11;
+		var min = max < 12 ? max-1 : 11;
 		if (amt >= min) {
 			for (let i = 10 * (amt-min); i > 0; i--)
 				tc_focus.click();
@@ -648,7 +648,7 @@ function tc_autofocus()
 //		for (let i = 10 * amt; i > 0; i--)
 //	for (let i = 10*amt; i > 0; i--)
 //		tc_focus.click();
-	var min = max < 12 ? max-2 : 11;
+	var min = max < 12 ? max-1 : 11;
 	if (amt >= min) {
 		for (let i = 10 * (amt-min); i > 0; i--)
 			tc_focus.click();
