@@ -135,7 +135,10 @@ function tc_populate_spells()
 // Call this every second to update resource values
 function tc_populate_resources()
 {
-	for (let n of document.querySelectorAll("div.game-main div.res-list div")) {
+	var actions = document.querySelectorAll("div.game-main div.resource-list tr.item-name:not(.locked)");
+	if (actions.length == 0)
+		actions =document.querySelectorAll("div.game-main div.res-list div");
+	for (let n of actions) {
 		var name = n.firstElementChild.innerHTML.toLowerCase();
 		var vals = n.lastElementChild.innerHTML.split("/");
 		var val0 = parseInt(vals[0]);
