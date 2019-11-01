@@ -284,6 +284,7 @@ function tc_cast_spell(spell)
 {
 	var spl = tc_spells.get(spell);
 	if (!spl) return false;
+	if (!spl.innerText.toLowerCase() == "cast") return false;//Checks if spell is learnt yet.
 
 	if (spl.disabled) {	// not sure how this happens, but seems to prevent action ever being called again
 		if (tc_debug) console.log("Spell '" + spell + "' was disabled - deleting it");
@@ -421,7 +422,11 @@ function tc_selljunk()
 
 	function checkmatch(m) { for (let i of sell_match) if (RegExp(i).test(m)) return true; return false; }
 
-	for (let row of document.querySelectorAll(".adventure .raid-bottom .inv table tr")) {
+	var itemlocation = document.querySelectorAll(".adventure .raid-bottom .inv .item-table tr")
+	if (itemlocation.length == 0)
+		itemlocation = document.querySelectorAll(".adventure .raid-bottom .inv table tr")
+
+	for (let row of itemlocation) {
 		// table has 4 columns: name + 3 buttons: Equip, Take, Sell
 		if (row.children[3].children[0].innerText == "Sell") {
 			var item = row.children[0].innerText;
@@ -439,7 +444,11 @@ function tc_selldups()
 	var items = new Map(); // test
 
 	// Build a map of item -> qty
-	for (let row of document.querySelectorAll(".adventure .raid-bottom .inv table tr")) {
+	var itemlocation = document.querySelectorAll(".adventure .raid-bottom .inv .item-table tr")
+	if (itemlocation.length == 0)
+		itemlocation = document.querySelectorAll(".adventure .raid-bottom .inv table tr")
+
+	for (let row of itemlocation) {
 		// table has 4 columns: name + 3 buttons: Equip, Take, Sell
 		if (row.children[3].children[0].innerText == "Sell") {
 			var item = row.children[0].innerText;
@@ -449,7 +458,7 @@ function tc_selldups()
 	}
 
 	// Now iterate over rows, selling items where qty > 1
-	for (let row of document.querySelectorAll(".adventure .raid-bottom .inv table tr")) {
+	for (let row of itemlocation) {
 		// table has 4 columns: name + 3 buttons: Equip, Take, Sell
 		if (row.children[3].children[0].innerText == "Sell") {
 			var item = row.children[0].innerText;
@@ -507,7 +516,9 @@ function tc_sellsetup()
 	if (tc_gettab() != "adventure") return;
 	if (document.getElementById("selldups")) return;
 
-	var sellall = document.querySelectorAll(".adventure .raid-bottom .inv div.flex-row button");
+	var sellall = document.querySelectorAll(".adventure .raid-bottom .inv span.top span button");
+	if (sellall.length = 0)
+		sellall = document.querySelectorAll(".adventure .raid-bottom .inv div.flex-row button");
 	if (sellall.length == 0) return;	// nothing to sell on tab yet
 	sellall = sellall[0];
 
@@ -522,6 +533,14 @@ function tc_sellsetup()
 	selldups.addEventListener("click", tc_selldups);
 	selldups.id = "selldups";
 
+	sellall.parentNode.insertBefore(selljunk, null);
+	sellall.parentNode.insertBefore(selldups, null);
+
+
+/* Newest versions of the game come with its own loot filter. This code will no longer be needed when both sites update.
+*/
+
+if (document.querySelector(".link-bar .vers").innerText.split(' ')[1]<400){
 	var br = document.createElement("br");
 	var t3 = document.createTextNode("Filter");
 	var filter = document.createElement("Input");
@@ -529,11 +548,12 @@ function tc_sellsetup()
 	filter.id = "lootfilter";
 	filter.width = "50";
 
-	sellall.parentNode.insertBefore(selljunk, null);
-	sellall.parentNode.insertBefore(selldups, null);
+
 	sellall.parentNode.insertBefore(br, null);
 	sellall.parentNode.insertBefore(t3, null);
 	sellall.parentNode.insertBefore(filter, null);
+}
+
 	if (tc_debug) console.log("Sell buttons added");
 }
 
@@ -586,7 +606,7 @@ function tc_autofocus()
 		tc_skill_saved = "";
 
 		// 10 mana required for compile tome
-		var min = max < 12 ? max-1 : 11;
+		var min = max < 11 ? max-1 : 10;
 		if (amt >= min) {
 			for (let i = 10 * (amt-min); i > 0; i--)
 				tc_focus.click();
@@ -648,10 +668,15 @@ function tc_autofocus()
 		skill_btn.click();
 
 		// Use up all mana
-//		for (let i = 10 * amt; i > 0; i--)
-//	for (let i = 10*amt; i > 0; i--)
-//		tc_focus.click();
-	var min = max < 12 ? max-1 : 11;
+/* Original auto focus click code.
+		for (let i = 10 * amt; i > 0; i--)
+	for (let i = 10*amt; i > 0; i--)
+		tc_focus.click();
+	tc_rest.click();// rest until next tick
+*/
+
+// Linspatz's triple rest action + save mana for tomes modification.
+	var min = max < 11 ? max-1 : 10;
 	if (amt >= min) {
 		for (let i = 10 * (amt-min); i > 0; i--)
 			tc_focus.click();
@@ -660,7 +685,7 @@ function tc_autofocus()
 	tc_click_action("chant");
 	tc_click_action("commune");
 	tc_click_action("rest");
-//	tc_rest.click();// rest until next tick
+// codeblock end
 
 }
 
